@@ -32,14 +32,13 @@ app.get("/",async (req,res)=>{
 })
 
 app.get('/cats',async (req, res) => {
-  // const directory = "cats"
-  // const nameFile = await returnRandomFileDirectory(directory)
-  // const data = await getUrlByName(nameFile,directory)
-  // const imageResponse = await axios.get(data,{responseType : "stream"})
-  // res.setHeader("Content-Type", imageResponse.headers["content-type"])
-  // res.setHeader("Content-Length",imageResponse.headers["content-length"])
-  // imageResponse.data.pipe(res)
-  res.send('ok')
+  const directory = "cats"
+  const nameFile = await returnRandomFileDirectory(directory)
+  const data = await getUrlByName(nameFile,directory)
+  const imageResponse = await axios.get(data,{responseType : "stream"})
+  res.setHeader("Content-Type", imageResponse.headers["content-type"])
+  res.setHeader("Content-Length",imageResponse.headers["content-length"])
+  imageResponse.data.pipe(res)
 });
 
 app.get('/cheems',async (req, res) => {

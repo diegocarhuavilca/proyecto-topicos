@@ -7,6 +7,7 @@ import axios from "axios"
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 import {getStorage,ref,getDownloadURL,listAll  } from "firebase/storage"
+import {returnRandomFileDirectory,getUrlByName} from './services.js'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -27,32 +28,27 @@ const imageRef = ref(storage,"020837f4-dcf1-49cf-a4fd-1c751c0ae716 (1).png")
 const app = express();
 
 app.get("/",async (req,res)=>{
-  console.log((await listAll(ref(storage,"cats"))).items.l)
-  res.send("asd")
+ res.send('home')
 })
 
-app.get('/cats',(req, res) => {
-  getDownloadURL(imageRef).then(async (url)=>{
-    const imageResponse = await axios.get(url,{responseType : "stream"})
-    res.setHeader("Content-Type", imageResponse.headers["content-type"])
-    res.setHeader("Content-Length",imageResponse.headers["content-length"])
-    imageResponse.data.pipe(res)
-  }).catch((err)=>{
-    console.log(err)
-    res.send(err)
-  })
+app.get('/cats',async (req, res) => {
+  const directory = "cats"
+  const nameFile = await returnRandomFileDirectory(directory)
+  const data = await getUrlByName(nameFile,directory)
+  const imageResponse = await axios.get(data,{responseType : "stream"})
+  res.setHeader("Content-Type", imageResponse.headers["content-type"])
+  res.setHeader("Content-Length",imageResponse.headers["content-length"])
+  imageResponse.data.pipe(res)
 });
 
-app.get('/cheems',(req, res) => {
-  getDownloadURL(imageRef).then(async (url)=>{
-    const imageResponse = await axios.get(url,{responseType : "stream"})
-    res.setHeader("Content-Type", imageResponse.headers["content-type"])
-    res.setHeader("Content-Length",imageResponse.headers["content-length"])
-    imageResponse.data.pipe(res)
-  }).catch((err)=>{
-    console.log(err)
-    res.send(err)
-  })
+app.get('/cheems',async (req, res) => {
+  const directory = "cheems"
+  const nameFile = await returnRandomFileDirectory(directory)
+  const data = await getUrlByName(nameFile,directory)
+  const imageResponse = await axios.get(data,{responseType : "stream"})
+  res.setHeader("Content-Type", imageResponse.headers["content-type"])
+  res.setHeader("Content-Length",imageResponse.headers["content-length"])
+  imageResponse.data.pipe(res)
 });
 
 const port = parseInt(process.env.PORT) || 8080;
